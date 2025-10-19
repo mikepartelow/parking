@@ -8,7 +8,7 @@
     EV Charging Simulator
 
     This program simulates a number of cars N attempting to charge on a number
-   of chargers M, where N < M.
+   of chargers M, where N > M.
 
     Each car needs Y minutes of charging time.
 

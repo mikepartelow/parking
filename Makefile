@@ -20,6 +20,9 @@ $(NAME): $(OBJ)
 clean:
 	rm -f $(NAME) $(OBJ)
 
+dbg: all
+	lldb ./$(NAME)
+
 nice:
 	$(FORMAT) -i $(SRC)
 	$(TIDY) $(SRC) -- -I. -std=c11;

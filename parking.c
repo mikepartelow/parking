@@ -22,18 +22,16 @@
     The simulation ends when all cars have been charged.
 
     TODO:
-    - [ ] add formatter, linter, valgrind, and so on.
     - [ ] reorg this file for readability.
-    - [ ] improve simulation by making reservations once clock has begun,
-   simulating people arriving later in the day to reserve.
     - [ ] randomize which chargers we pick. current implementation loads up the
    first few chargers and leaves the last ones idle.
 
 */
 
-#define NUM_CHARGERS 3
+#define NUM_CHARGERS 4
 #define CLOCK_TICK_MINUTES                                                     \
   5 // every clock tick adds this many minutes to the clock
+#define RESERVE_ALL_AFTER (60*5) // after this many minutes, everyone has arrived, reserve chargers for them
 
 static inline int imax(int a, int b) { return a > b ? a : b; }
 
@@ -51,8 +49,8 @@ typedef struct Reservation {
 
 typedef struct Charger {
   int id;
-  Car *charging_car;
   int charging_minutes;
+  Car *charging_car;
   Reservation *reservations;
 } Charger;
 
@@ -182,7 +180,10 @@ int main(void) {
   Car cars[] = {
       {"Alice", 30, 0},      {"Bob", 45, 0},     {"Charlie", 20, 0},
       {"Delroy", 60, 0},     {"Egon", 30, 0},    {"Fairuza", 60, 0},
-      {"Galadriel", 120, 0}, {"Horace", 120, 0},
+      {"Galadriel", 120, 0}, {"Horace", 120, 0}, {"Ignatz", 25, 0},
+      {"Jebediah", 35, 0},   {"Karl", 10, 0},    {"Leopold", 15, 0},
+      {"Mike", 245, 0},      {"Niles", 320, 0},  {"Oren", 75, 0},
+      {"Pangloss", 90, 0},
   };
   int num_cars = sizeof(cars) / sizeof(cars[0]);
   validate_cars(num_cars, cars);
@@ -200,12 +201,29 @@ int main(void) {
     free_charger(&chargers[i]);
   }
 
-  make_reservations(num_cars, cars, NUM_CHARGERS, chargers);
+  // at the simulation beginning, not all cars have arrived in the lot. only
+  // some of the cars are ready to charge. we'll eventually charge all of them.
+  int cars_ready_to_charge = imax(1, arc4random() % num_cars);
+
+  make_reservations(cars_ready_to_charge, cars, NUM_CHARGERS, chargers);
 
   int time = 0;
   while (!all_charged(num_cars, cars)) {
     printf("⏳ time=%d\n", time);
     time += CLOCK_TICK_MINUTES;
+
+    // if there are cars with no reservations, we have a 1 in 5 chance of more
+    // cars taking reservations, or if it's 4 hours in to the simulation, a 100%
+    // chance
+    if (cars_ready_to_charge < num_cars &&
+        (time > RESERVE_ALL_AFTER || arc4random() % 5 == 0)) {
+      int cars_arriving =
+          imax(1, arc4random() % (num_cars - cars_ready_to_charge));
+      make_reservations(cars_arriving, &cars[cars_ready_to_charge],
+                        NUM_CHARGERS, chargers);
+      cars_ready_to_charge += cars_arriving;
+      assert(cars_ready_to_charge <= num_cars);
+    }
 
     for (int c = 0; c < NUM_CHARGERS; ++c) {
       Charger *charger = &chargers[c];

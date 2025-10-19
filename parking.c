@@ -198,6 +198,7 @@ int main(void) {
                 charger->charging_minutes += CLOCK_TICK_MINUTES;
                 if (charger->charging_minutes == charger->charging_car->charge_minutes) {
                     charger->charging_car->charged = 1;
+                    printf("🏁 %s's car is now charged!\n", charger->charging_car->owner);
                     free_charger(charger);
                 }
             }

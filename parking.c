@@ -184,7 +184,11 @@ int main(void) {
 
     make_reservations(num_cars, cars, NUM_CHARGERS, chargers);
 
+    int time = 0;
     while (!all_charged(num_cars, cars)) {
+        printf("⏳ time=%d\n", time);
+        time += CLOCK_TICK_MINUTES;
+
         for (int c = 0; c < NUM_CHARGERS; ++c) {
             Charger *charger = &chargers[c];
             if (charger->charging_car == 0 && charger->reservations != 0) {
@@ -198,7 +202,7 @@ int main(void) {
                 charger->charging_minutes += CLOCK_TICK_MINUTES;
                 if (charger->charging_minutes == charger->charging_car->charge_minutes) {
                     charger->charging_car->charged = 1;
-                    printf("🏁 %s's car is now charged!\n", charger->charging_car->owner);
+                    printf("🏁 %s's car is now charged after %d minutes on charger %d.\n", charger->charging_car->owner, charger->charging_car->charge_minutes, charger->id);
                     free_charger(charger);
                 }
             }

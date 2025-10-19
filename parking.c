@@ -101,7 +101,6 @@ Reservation *make_reservation(Car *car) {
 void reserve(Car *car, Charger *charger) {
     if (charger->reservations == NULL) {
         charger->reservations = make_reservation(car);
-        return;
     } else {
         for (Reservation *r = charger->reservations; ; r = r->next) {
             if (r->next == NULL) {

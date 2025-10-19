@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean nice
 
 NAME := parking
 CC   ?= cc
@@ -8,6 +8,10 @@ CFLAGS += -g -O0 -fno-omit-frame-pointer
 SRC := $(NAME).c
 OBJ := $(SRC:.c=.o)
 
+FORMAT := clang-format
+TIDY := clang-tidy
+CPPCHECK := cppcheck
+
 all: $(NAME)
 
 $(NAME): $(OBJ)
@@ -15,3 +19,9 @@ $(NAME): $(OBJ)
 
 clean:
 	rm -f $(NAME) $(OBJ)
+
+nice:
+	$(FORMAT) -i $(SRC)
+	$(TIDY) $(SRC) -- -I. -std=c11;
+	$(CPPCHECK) --enable=warning,style,performance,portability \
+		--std=c11 --inline-suppr --error-exitcode=1 --check-level=exhaustive .

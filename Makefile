@@ -25,3 +25,7 @@ nice:
 	$(TIDY) $(SRC) -- -I. -std=c11;
 	$(CPPCHECK) --enable=warning,style,performance,portability \
 		--std=c11 --inline-suppr --error-exitcode=1 --check-level=exhaustive .
+
+valgrind:
+	@docker build -f ./Dockerfile -t parking-valgrind .
+	@docker rmi parking-valgrind

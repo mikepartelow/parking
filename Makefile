@@ -1,4 +1,4 @@
-.PHONY: all clean nice
+.PHONY: all clean nice run valgrind
 
 NAME := parking
 CC   ?= cc
@@ -25,6 +25,9 @@ nice:
 	$(TIDY) $(SRC) -- -I. -std=c11;
 	$(CPPCHECK) --enable=warning,style,performance,portability \
 		--std=c11 --inline-suppr --error-exitcode=1 --check-level=exhaustive .
+
+run: all
+	./$(NAME)
 
 valgrind:
 	@docker build -f ./Dockerfile -t parking-valgrind .

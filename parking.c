@@ -188,6 +188,11 @@ int main(void) {
   validate_cars(num_cars, cars);
   assert(num_cars > NUM_CHARGERS);
 
+  int total_charge_time_required = 0;
+  for (int car = 0; car < num_cars; ++car) {
+    total_charge_time_required += cars[car].charge_minutes;
+  }
+
   Charger chargers[NUM_CHARGERS];
   for (int i = 0; i < NUM_CHARGERS; ++i) {
     chargers[i].id = i;
@@ -225,8 +230,9 @@ int main(void) {
     }
   }
 
-  printf("🏆 All cars charged! We charged %d cars on %d chargers.\n", num_cars,
-         NUM_CHARGERS);
+  printf("🏆 All cars charged! We charged %d cars requiring %d minutes of "
+         "total charge time on %d chargers in %d minutes.\n",
+         num_cars, total_charge_time_required, NUM_CHARGERS, time);
 
   return 0;
 }

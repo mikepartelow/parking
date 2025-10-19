@@ -19,6 +19,7 @@
     The simulation ends when all cars have been charged.
 
     TODO:
+    - [ ] add formatter, linter, valgrind, and so on.
     - [ ] reorg this file for readability.
     - [ ] improve simulation by making reservations once clock has begun, simulating people arriving later in the day to reserve.
     - [ ] randomize which chargers we pick. current implementation loads up the first few chargers and leaves the last ones idle.

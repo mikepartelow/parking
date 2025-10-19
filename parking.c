@@ -209,7 +209,7 @@ int main(void) {
         }
     }
 
-    printf("🏆 All cars charged!\n");
+    printf("🏆 All cars charged! We charged %d cars on %d chargers.\n", num_cars, NUM_CHARGERS);
 
     return 0;
 }
